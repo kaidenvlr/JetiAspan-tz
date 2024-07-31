@@ -34,7 +34,7 @@
     {
       "id": 1,
       "name": "Product 1",
-      "price": "123",
+      "price": 123,
       "images": [
         "media/products/image1.jpg",
         "media/products/image2.jpg",
@@ -46,7 +46,7 @@
     {
       "id": 2,
       "name": "Product 2",
-      "price": "456",
+      "price": 456,
       "images": [
         "media/products/image4.jpg",
         "media/products/image5.jpg",
