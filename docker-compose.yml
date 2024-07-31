@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  web:
+    container_name: jetiaspan_web
+    build: ./
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && python manage.py create_superuser && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/app/
+      - ./static_files:/usr/src/app/static/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: on-failure
+
+  db:
+    container_name: jetiaspan_db
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ".env.template"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    healthcheck:
+      test: [
+        "CMD-SHELL", "pg_isready -d $DB_NAME -U $DB_USER"
+      ]
+
+volumes:
+  postgres_data:
+  static_files:
