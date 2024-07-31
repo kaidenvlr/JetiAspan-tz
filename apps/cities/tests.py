@@ -31,7 +31,7 @@ class TestProducts(APITestCase, URLPatternsTestCase):
 
         for filename in filenames:
             with open(filename, mode='rb') as f:
-                fp = SimpleUploadedFile(name=filename, content=f.read(), content_type='image/png')
+                fp = SimpleUploadedFile(name=filename, content=f.read(), content_type='image/png; image/jpg')
                 self.files.append(fp)
 
         self.create_city()
