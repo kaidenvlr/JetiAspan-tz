@@ -36,9 +36,9 @@
       "name": "Product 1",
       "price": 123,
       "images": [
-        "media/products/image1.jpg",
-        "media/products/image2.jpg",
-        "media/products/image3.jpg",
+        "/media/products/image1.jpg",
+        "/media/products/image2.jpg",
+        "/media/products/image3.jpg",
       ],
       "created_at": "2024-07-31T15:25:37.269Z",
       "modified_at": "2024-07-31T15:25:37.269Z"
@@ -48,9 +48,9 @@
       "name": "Product 2",
       "price": 456,
       "images": [
-        "media/products/image4.jpg",
-        "media/products/image5.jpg",
-        "media/products/image6.jpg",
+        "/media/products/image4.jpg",
+        "/media/products/image5.jpg",
+        "/media/products/image6.jpg",
       ],
       "created_at": "2024-07-31T15:25:37.269Z",
       "modified_at": "2024-07-31T15:25:37.269Z"
