@@ -34,6 +34,8 @@ class TestProducts(APITestCase, URLPatternsTestCase):
                 fp = SimpleUploadedFile(name=filename, content=f.read(), content_type='image/png')
                 self.files.append(fp)
 
+        self.create_city()
+
     def receive_token(self):
         response = self.client.post(reverse('signup'), data={
             "username": self.username,
@@ -59,74 +61,54 @@ class TestProducts(APITestCase, URLPatternsTestCase):
         response = self.client.post(reverse('city-create'), data={
             "name": "City 1"
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
 
-    def create_products(self):
+        city_id = json.loads(response.content).get('id')
+
         # Create product 1
         response = self.client.post(reverse('product-list'), data={
             "name": "Product 1",
             "price": 100
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
+        product_1_id = json.loads(response.content).get('id')
 
         # Create product 2
         response = self.client.post(reverse('product-list'), data={
             "name": "Product 2",
             "price": 200
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
+        product_2_id = json.loads(response.content).get('id')
 
-    def create_product_images(self):
         # Create product image
         response = self.client.post(reverse('product-image-create'), data={
-            "product": 1,
+            "product": product_1_id,
             "image": self.files[0]
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
 
         # Create product image for city
         response = self.client.post(reverse('product-image-create'), data={
-            "product": 1,
+            "product": product_1_id,
             "image": self.files[1],
-            "preferred_city_id": 1
+            "preferred_city": city_id
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
 
         # Create product image
         response = self.client.post(reverse('product-image-create'), data={
-            "product": 2,
+            "product": product_2_id,
             "image": self.files[2]
         })
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.status_code, 201)
 
+
+class P2(TestProducts):
     def test_product_get(self):
-        self.create_city()
-        self.create_products()
-        self.create_product_images()
+        self.api_authentication()
         response = self.client.get(reverse('product-list'))
         self.assertEqual(200, response.status_code)
-
-        data = json.loads(response.content)
-        correct_images = [
-            '/media/products/cookie3',
-            '/media/products/cookie2',
-        ]
-        for i, product in enumerate(data):
-            self.assertIn('id', product)
-            self.assertIn('name', product)
-            self.assertIn('price', product)
-            self.assertIn('images', product)
-
-            self.assertEqual(product['images'][0][:23], correct_images[i])
-
-    def test_product_get_with_city_id(self):
-        self.create_city()
-        self.create_products()
-        self.create_product_images()
-
-        response = self.client.get(reverse('products', {'city_id': 1}))
-        self.assertEqual(200, response.status_code)
-
         data = json.loads(response.content)
         correct_images = [
             '/media/products/cookie3',
@@ -138,4 +120,24 @@ class TestProducts(APITestCase, URLPatternsTestCase):
             self.assertIn('price', product)
             self.assertIn('images', product)
 
-            self.assertEqual(product['images'][0][:23 - i], [correct_images[i]])
+            self.assertIn(correct_images[i], product['images'][0])
+
+
+class P1(TestProducts):
+
+    def test_product_get_with_city_id(self):
+        self.api_authentication()
+        response = self.client.get(reverse('products', kwargs={'city_id': 1}))
+        self.assertEqual(200, response.status_code)
+        data = json.loads(response.content)
+        correct_images = [
+            '/media/products/cookie3',
+            '/media/products/cookie2',
+        ]
+        for i, product in enumerate(data):
+            self.assertIn('id', product)
+            self.assertIn('name', product)
+            self.assertIn('price', product)
+            self.assertIn('images', product)
+
+            self.assertIn(correct_images[i], product['images'][0])
