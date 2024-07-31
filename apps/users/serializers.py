@@ -13,8 +13,6 @@ class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
 
     def validate_username(self, username):
 

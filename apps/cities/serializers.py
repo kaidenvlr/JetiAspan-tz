@@ -2,11 +2,23 @@ from rest_framework import serializers
 
 from django.conf import settings
 
-from apps.cities.models import Product, ProductImage
+from apps.cities.models import Product, ProductImage, City
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ('id', 'name', 'created_at', 'modified_at')
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ('id', 'product', 'image', 'preferred_city', 'created_at', 'modified_at')
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
