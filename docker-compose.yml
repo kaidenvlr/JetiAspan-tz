@@ -7,7 +7,7 @@ services:
     command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && python manage.py create_superuser && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/usr/src/app/
-      - ./static_files:/usr/src/app/static/
+      - ./staticfiles:/usr/src/app/static/
     ports:
       - "8000:8000"
     depends_on:
